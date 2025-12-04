@@ -3,6 +3,18 @@ setlocal EnableDelayedExpansion
 
 rem Hangman Script - Stage 2
 rem Menu structure added
+rem Word list added in stage 3
+set WORD1=computer
+set WORD2=program
+set WORD3=script
+set WORD4=matrix
+set WORD5=coding
+set WORD6=canada
+set WORD7=seneca
+set WORD8=hangman
+
+set TOTAL=8
+
 
 :MENU
 cls
@@ -21,9 +33,13 @@ if "%CHOICE%"=="3" goto END
 goto MENU
 
 :PLAY
-echo Play selected.
+cls
+set /a INDEX=%RANDOM% %% %TOTAL% + 1
+set SECRET=!WORD%INDEX%!
+echo Selected word: %SECRET%
 pause
 goto MENU
+
 
 :SCORE
 echo Scoreboard selected.
