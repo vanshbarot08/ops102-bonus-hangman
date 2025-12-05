@@ -38,25 +38,92 @@ cls
 set /a INDEX=%RANDOM% %% %TOTAL% + 1
 set SECRET=!WORD%INDEX%!
 
-rem Build mask of underscores
 set MASK=
 for /l %%i in (0,1,30) do (
     set C=!SECRET:~%%i,1!
-    if not "!C!"=="" (
-        set MASK=!MASK!_
-    )
+    if not "!C!"=="" set MASK=!MASK!_
 )
 
-echo Word mask created: %MASK%
+set GUESSES=
+set WRONG=0
+set MAXWRONG=6
+
+:ROUND
+cls
+echo =========================
+echo Word: %MASK%
+echo Wrong guesses: %WRONG% / %MAXWRONG%
+echo Guessed letters: %GUESSES%
+echo =========================
+echo.
+
+if "%MASK%"=="%SECRET%" goto WIN
+if %WRONG% GEQ %MAXWRONG% goto LOSE
+
+set /p LETTER=Enter a letter: 
+set LETTER=%LETTER:~0,1%
+
+if "%LETTER%"=="" goto ROUND
+
+echo %GUESSES% | find /i " %LETTER% " >nul
+if %errorlevel%==0 (
+    echo Already guessed.
+    pause
+    goto ROUND
+)
+
+set GUESSES=%GUESSES% %LETTER%
+
+echo %SECRET% | find /i "%LETTER%" >nul
+if %errorlevel%==0 (
+    set NEW=
+    for /l %%i in (0,1,30) do (
+        set C=!SECRET:~%%i,1!
+        set M=!MASK:~%%i,1!
+
+        if "!C!"=="" (
+        ) else (
+            if /i "!C!"=="%LETTER%" (
+                set NEW=!NEW!!LETTER!
+            ) else (
+                set NEW=!NEW!!M!
+            )
+        )
+    )
+    set MASK=!NEW!
+) else (
+    set /a WRONG+=1
+)
+
+goto ROUND
+
+:WIN
+echo You guessed it!
+echo Word was: %SECRET%
+set /a WINS+=1
+set /a GAMES+=1
+pause
+goto MENU
+
+:LOSE
+echo You lost!
+echo Word was: %SECRET%
+set /a GAMES+=1
 pause
 goto MENU
 
 
 
 :SCORE
-echo Scoreboard selected.
+cls
+echo =========================
+echo       SCOREBOARD
+echo =========================
+echo Games Played: %GAMES%
+echo Games Won:    %WINS%
 pause
 goto MENU
+
 
 :END
 echo Goodbye!
