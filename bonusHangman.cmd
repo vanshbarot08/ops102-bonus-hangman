@@ -1,6 +1,16 @@
 @echo off
 setlocal EnableDelayedExpansion
 
+rem Stage 6 - Add colour support
+for /f "delims=" %%A in ('echo prompt $E^| cmd') do set "ESC=%%A"
+
+set RED=%ESC%[91m
+set GREEN=%ESC%[92m
+set YELLOW=%ESC%[93m
+set CYAN=%ESC%[96m
+set RESET=%ESC%[0m
+
+
 rem Hangman Script - Stage 2
 rem Menu structure added
 rem Word list added in stage 3
@@ -18,9 +28,9 @@ set TOTAL=8
 
 :MENU
 cls
-echo =========================
-echo          HANGMAN
-echo =========================
+echo %CYAN%===================================%RESET%
+echo %CYAN%                HANGMAN         %RESET%
+echo %CYAN%===================================%RESET%
 echo 1. Play Game
 echo 2. Scoreboard
 echo 3. Quit
@@ -50,11 +60,11 @@ set MAXWRONG=6
 
 :ROUND
 cls
-echo =========================
-echo Word: %MASK%
-echo Wrong guesses: %WRONG% / %MAXWRONG%
+echo %CYAN%=========================%RESET%
+echo Word: %YELLOW%%MASK%%RESET%
+echo Wrong guesses: %RED%%WRONG%%RESET% / %MAXWRONG%
 echo Guessed letters: %GUESSES%
-echo =========================
+echo %CYAN%=========================%RESET%
 echo.
 
 if "%MASK%"=="%SECRET%" goto WIN
@@ -98,16 +108,16 @@ if %errorlevel%==0 (
 goto ROUND
 
 :WIN
-echo You guessed it!
-echo Word was: %SECRET%
+echo %GREEN%You guessed it!%RESET%
+echo Word was: %GREEN%%SECRET%%RESET%
 set /a WINS+=1
 set /a GAMES+=1
 pause
 goto MENU
 
 :LOSE
-echo You lost!
-echo Word was: %SECRET%
+echo %RED%You lost!%RESET%
+echo Word was: %RED%%SECRET%%RESET%
 set /a GAMES+=1
 pause
 goto MENU
@@ -116,9 +126,9 @@ goto MENU
 
 :SCORE
 cls
-echo =========================
-echo       SCOREBOARD
-echo =========================
+echo %CYAN%===================================%RESET%
+echo %CYAN%               SCOREBOARD       %RESET%
+echo %CYAN%===================================%RESET%
 echo Games Played: %GAMES%
 echo Games Won:    %WINS%
 pause
@@ -127,4 +137,5 @@ goto MENU
 
 :END
 echo Goodbye!
+echo Thanks for Playing.
 exit /b
