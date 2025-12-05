@@ -1,6 +1,11 @@
 @echo off
 setlocal EnableDelayedExpansion
 
+rem ========================================================
+rem OPS102 Bonus Lab - Hangman Game (CMD Version)
+rem Author: Vansh Barot
+rem ========================================================
+
 rem Stage 6 - Add colour support
 for /f "delims=" %%A in ('echo prompt $E^| cmd') do set "ESC=%%A"
 
@@ -70,6 +75,8 @@ echo.
 if "%MASK%"=="%SECRET%" goto WIN
 if %WRONG% GEQ %MAXWRONG% goto LOSE
 
+echo.
+echo Guess a letter:
 set /p LETTER=Enter a letter: 
 set LETTER=%LETTER:~0,1%
 
@@ -77,7 +84,7 @@ if "%LETTER%"=="" goto ROUND
 
 echo %GUESSES% | find /i " %LETTER% " >nul
 if %errorlevel%==0 (
-    echo Already guessed.
+    echo %YELLOW%Already guessed!%RESET%
     pause
     goto ROUND
 )
@@ -101,9 +108,12 @@ if %errorlevel%==0 (
         )
     )
     set MASK=!NEW!
-) else (
+) ) else (
     set /a WRONG+=1
+    echo %RED%Wrong guess!%RESET%
+    pause
 )
+
 
 goto ROUND
 
@@ -136,6 +146,6 @@ goto MENU
 
 
 :END
-echo Goodbye!
-echo Thanks for Playing.
+echo %CYAN%Goodbye!%RESET%
+echo %CYAN%Thanks for Playing.%RESET%
 exit /b
