@@ -34,11 +34,23 @@ goto MENU
 
 :PLAY
 cls
+
 set /a INDEX=%RANDOM% %% %TOTAL% + 1
 set SECRET=!WORD%INDEX%!
-echo Selected word: %SECRET%
+
+rem Build mask of underscores
+set MASK=
+for /l %%i in (0,1,30) do (
+    set C=!SECRET:~%%i,1!
+    if not "!C!"=="" (
+        set MASK=!MASK!_
+    )
+)
+
+echo Word mask created: %MASK%
 pause
 goto MENU
+
 
 
 :SCORE
