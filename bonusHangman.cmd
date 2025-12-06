@@ -6,8 +6,7 @@ rem OPS102 Bonus Lab - Hangman Game (CMD Version)
 rem Author: Vansh Barot
 rem ========================================================
 
-rem Stage 6 - Add colour support
-for /f "delims=" %%A in ('echo prompt $E^| cmd') do set "ESC=%%A"
+for /f %%A in ('echo prompt $E^| cmd') do set "ESC=%%A"
 
 set RED=%ESC%[91m
 set GREEN=%ESC%[92m
@@ -16,9 +15,6 @@ set CYAN=%ESC%[96m
 set RESET=%ESC%[0m
 
 
-rem Hangman Script - Stage 2
-rem Menu structure added
-rem Word list added in stage 3
 set WORD1=computer
 set WORD2=program
 set WORD3=script
@@ -29,7 +25,8 @@ set WORD7=seneca
 set WORD8=hangman
 
 set TOTAL=8
-
+set WINS=0
+set GAMES=0
 
 :MENU
 cls
@@ -76,15 +73,26 @@ if "%MASK%"=="%SECRET%" goto WIN
 if %WRONG% GEQ %MAXWRONG% goto LOSE
 
 echo.
-echo Guess a letter:
 set /p LETTER=Enter a letter: 
 set LETTER=%LETTER:~0,1%
 
 if "%LETTER%"=="" goto ROUND
 
+
+set LETTER_UP=%LETTER%
+for %%A in (a b c d e f g h i j k l m n o p q r s t u v w x y z) do (
+    if /I "%LETTER%"=="%%A" goto VALID_LETTER
+)
+
+echo %RED%Invalid input. Please enter a single letter (A-Z).%RESET%
+pause
+goto ROUND
+
+:VALID_LETTER
+REM Check if already guessed
 echo %GUESSES% | find /i " %LETTER% " >nul
 if %errorlevel%==0 (
-    echo %YELLOW%Already guessed!%RESET%
+    echo %YELLOW%Already guessed.%RESET%
     pause
     goto ROUND
 )
@@ -99,6 +107,7 @@ if %errorlevel%==0 (
         set M=!MASK:~%%i,1!
 
         if "!C!"=="" (
+            rem do nothing
         ) else (
             if /i "!C!"=="%LETTER%" (
                 set NEW=!NEW!!LETTER!
@@ -108,12 +117,11 @@ if %errorlevel%==0 (
         )
     )
     set MASK=!NEW!
-) ) else (
+) else (
     set /a WRONG+=1
     echo %RED%Wrong guess!%RESET%
     pause
 )
-
 
 goto ROUND
 
@@ -143,12 +151,12 @@ cls
 echo %CYAN%===================================%RESET%
 echo %CYAN%               SCOREBOARD       %RESET%
 echo %CYAN%===================================%RESET%
-echo Games Played: %GAMES%
-echo Games Won:    %WINS%
+echo Games Played:  %GAMES%
+echo Games Won   :  %WINS%
 
-if %GAMES% GTR 0 (
-    set /a RATE=%WINS%*100/%GAMES%
-    echo Win Rate     : %GREEN%%RATE%%% %RESET%
+if !GAMES! GTR 0 (
+    set /a RATE=!WINS!*100/!GAMES!
+    echo Win Rate     : %GREEN%!RATE!%% %RESET%
 )
 echo.
 pause
