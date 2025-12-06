@@ -118,10 +118,12 @@ if %errorlevel%==0 (
 goto ROUND
 
 :WIN
-echo %GREEN%You guessed it!%RESET%
-echo Word was: %GREEN%%SECRET%%RESET%
+echo %GREEN%Congratulations! You guessed the word!%RESET%
+echo The word was: %GREEN%%SECRET%%RESET%
 set /a WINS+=1
 set /a GAMES+=1
+echo.
+echo Press any key to return to the menu...
 pause
 goto MENU
 
@@ -129,6 +131,8 @@ goto MENU
 echo %RED%You lost!%RESET%
 echo Word was: %RED%%SECRET%%RESET%
 set /a GAMES+=1
+echo.
+echo Press any key to return to the menu...
 pause
 goto MENU
 
@@ -141,6 +145,12 @@ echo %CYAN%               SCOREBOARD       %RESET%
 echo %CYAN%===================================%RESET%
 echo Games Played: %GAMES%
 echo Games Won:    %WINS%
+
+if %GAMES% GTR 0 (
+    set /a RATE=%WINS%*100/%GAMES%
+    echo Win Rate     : %GREEN%%RATE%%% %RESET%
+)
+echo.
 pause
 goto MENU
 
